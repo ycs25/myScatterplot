@@ -1,0 +1,9 @@
+dependencies:
+ - name: myScatterplot
+   version: 0.1.0
+   src: htmlwidgets/lib/
+   script:
+     - three.js
+     - OrbitControls.js
+     - dat.gui.min.js
+     - jquery.min.js
