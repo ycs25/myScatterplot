@@ -11,8 +11,8 @@ HTMLWidgets.widget({
 		return {
 			renderValue: function(x)
 			{
-				widget.initgui();
-				widget.createplot();
+				widget.initgui(x);
+				widget.createplot(x);
 				widget.render();
 				widget.animate();
 			}
@@ -28,10 +28,6 @@ var Widget = function(el)
 
 	var _this = this;
 
-	_this.V1 = new Float32Array([0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.4, 0.4, 0.4, 0.4, 0.6, 0.6, 0.6, 0.6, 0.6, 0.8, 0.8, 0.8, 0.8, 0.8, 1.0, 1.0, 1.0, 1.0, 1.0]);
-	_this.V2 = new Float32Array([0.2, 0.04, 0.008, 0.0016, 0.00032, 0.4, 0.16, 0.064, 0.0256, 0.01024, 0.6, 0.36, 0.216, 0.1296, 0.07776, 0.8, 0.64, 0.512, 0.4096, 0.32768, 1, 1, 1, 1, 1]);
-	_this.V3 = new Float32Array([0.2, 0.4472, 0.5848, 0.6687, 0.7248, 0.4, 0.6325, 0.7368, 0.7953, 0.8326, 0.6, 0.7746, 0.8434, 0.8801, 0.9029, 0.8, 0.8944, 0.9283, 0.9457, 0.9564, 1, 1, 1, 1, 1]);
-
 	_this.stage = 1;
 	_this.ConstantRate = false;
 	var ps = {
@@ -39,9 +35,10 @@ var Widget = function(el)
 		ConstantRate: false
 	};
 
-	_this.initgui = function() {
+	_this.initgui = function(x) {
+	  _this.stages = x.stages;
 		var gui = new dat.GUI();
-		gui.add(ps, "stage",1,5,1).onChange(function (value) {_this.stage = value});
+		gui.add(ps, "stage",1,_this.stages,1).onChange(function (value) {_this.stage = value});
 		gui.add(ps,"ConstantRate").onChange(function (value) {_this.ConstantRate = value});
 	};
 
@@ -63,11 +60,18 @@ var Widget = function(el)
 	_this.controls = new THREE.OrbitControls(_this.camera, _this.renderer.domElement);
 	_this.controls.addEventListener('change', _this.render);
 
-	_this.createplot = function()
+	_this.createplot = function(x)
 	{
 		var cexaxis = 0.5;
 		var cexlab = 1;
 		var fontaxis = "48px Arial";
+
+		_this.V1 = new Float32Array(x.X);
+		_this.V2 = new Float32Array(x.Y);
+		_this.V3 = new Float32Array(x.Z);
+
+		_this.pnum = x.pnum;
+		_this.pnum3 = 3*x.pnum;
 
 		//axis
 		var group = new THREE.Object3D();
@@ -98,9 +102,9 @@ var Widget = function(el)
 		var pointsmaterial = new THREE.PointsMaterial( { color: 0x888888, size: 0.05 } );
 		_this.pointgroup = new THREE.Object3D();
 
-		_this.positions = new Float32Array(15);
+		_this.positions = new Float32Array(_this.pnum3);
 
-		for (var i=0; i<5; i++) {
+		for (var i=0; i<_this.pnum; i++) {
 			_this.positions[3*i] = _this.V1[i];
 			_this.positions[3*i+1] = _this.V2[i];
 			_this.positions[3*i+2] = _this.V3[i];
@@ -176,27 +180,27 @@ var Widget = function(el)
 
 	_this.animate = function()
 	{
-		var newpositions = new Float32Array(15);
-		for (var i=0; i<5; i++) {
-		newpositions[3*i] = _this.V1[(_this.stage-1)*5+i];
-		newpositions[3*i+1] = _this.V2[(_this.stage-1)*5+i];
-		newpositions[3*i+2] = _this.V3[(_this.stage-1)*5+i];
+		var newpositions = new Float32Array(_this.pnum3);
+		for (var i=0; i<_this.pnum; i++) {
+		newpositions[3*i] = _this.V1[(_this.stage-1)*_this.pnum+i];
+		newpositions[3*i+1] = _this.V2[(_this.stage-1)*_this.pnum+i];
+		newpositions[3*i+2] = _this.V3[(_this.stage-1)*_this.pnum+i];
 		}
 
-		var velocity = new Float32Array(15);
+		var velocity = new Float32Array(_this.pnum3);
 
 		if (_this.ConstantRate) {
-			for (var k = 0; k < 15; k++) {
+			for (var k = 0; k < _this.pnum3; k++) {
 				velocity[k] = [(newpositions[k] - _this.positions[k])/10];
 			}
 
-			for (var k = 0; k < 15; k++) {
+			for (var k = 0; k < _this.pnum3; k++) {
 				if (_this.positions[k] != newpositions[k]) {
 					_this.positions[k] += velocity[k];
 				} else {_this.positions[k] = newpositions[k]}
 			}
 		} else {
-			for (var k = 0; k < 15; k++) {
+			for (var k = 0; k < _this.pnum3; k++) {
 				velocity[k] = [(newpositions[k] - _this.positions[k])/10];
 				if (Math.abs(velocity[k])>0.0001) {
 					_this.positions[k] += velocity[k];

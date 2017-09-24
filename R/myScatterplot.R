@@ -6,20 +6,22 @@
 #' @param y A vector of y-coordinates
 #' @param z A vector of z-coordinates
 #' @param stages Number of stages
+#' @param pnum Number of points
 #'
 #' @return A htmlwidget
 #'
 #' @import htmlwidgets
 #'
 #' @export
-myScatterplot <- function(x,y,z,stages) {
+myScatterplot <- function(x,y,z,stages,pnum) {
 
   # pass the data
   x <- list(
     X = x,
     Y = y,
     Z = z,
-    stages = stages
+    stages = stages,
+    pnum = pnum
   )
 
   # create widget

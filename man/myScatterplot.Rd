@@ -4,7 +4,7 @@
 \alias{myScatterplot}
 \title{myScatterplot}
 \usage{
-myScatterplot(x, y, z, stages)
+myScatterplot(x, y, z, stages, pnum)
 }
 \arguments{
 \item{x}{A vector of x-coordinates}
@@ -14,6 +14,8 @@ myScatterplot(x, y, z, stages)
 \item{z}{A vector of z-coordinates}
 
 \item{stages}{Number of stages}
+
+\item{pnum}{Number of points}
 }
 \value{
 A htmlwidget
