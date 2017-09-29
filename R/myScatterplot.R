@@ -8,7 +8,7 @@
 #' @param stages Number of stages
 #' @param pnum Number of points
 #'
-#' @return A htmlwidget
+#' @return An htmlwidget
 #'
 #' @import htmlwidgets
 #'

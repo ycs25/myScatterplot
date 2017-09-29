@@ -3,4 +3,5 @@
 export(myScatterplot)
 export(myScatterplotOutput)
 export(renderMyScatterplot)
+export(scatterplotS)
 import(htmlwidgets)

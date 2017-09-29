@@ -18,7 +18,7 @@ myScatterplot(x, y, z, stages, pnum)
 \item{pnum}{Number of points}
 }
 \value{
-A htmlwidget
+An htmlwidget
 }
 \description{
 <Add Description>
